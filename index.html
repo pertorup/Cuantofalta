@@ -54,8 +54,22 @@
       >
         Compartir
       </button>
-    </div>
 
+		<button 
+		  onclick="generateImage()"
+		  class="w-full mt-3 bg-purple-600 text-white py-3 rounded-xl font-semibold hover:bg-purple-700 transition"
+		>
+		  📸 Generar imagen
+		</button>	  
+    </div>
+	
+	<section class="mt-8">
+	  <h2 class="text-lg font-semibold mb-3 text-gray-700">
+		🔜 Próximos eventos
+	  </h2>
+
+	  <ul id="eventsList" class="space-y-2 text-sm"></ul>
+	</section>
   </main>
 
   <script src="app.js"></script>
