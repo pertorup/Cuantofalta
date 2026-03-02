@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>¿Cuánto falta?</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- SEO básico -->
+  <meta name="description" content="Calculá cuánto falta para una fecha importante. Gratis, rápido y sin registros.">
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gradient-to-br from-indigo-600 to-purple-700 min-h-screen flex items-center justify-center text-white">
+
+  <main class="bg-white text-gray-900 rounded-2xl shadow-xl p-6 w-full max-w-md">
+    
+    <h1 class="text-2xl font-bold text-center mb-4">
+      ¿Cuánto falta?
+    </h1>
+
+    <p class="text-center text-gray-600 mb-6">
+      Elegí una fecha y mirá el tiempo restante.
+    </p>
+
+    <!-- Input fecha -->
+    <input 
+      type="date" 
+      id="targetDate"
+      class="w-full p-3 border rounded-xl mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+    />
+
+    <!-- Resultado -->
+    <div id="result" class="text-center my-6 hidden">
+      <div class="text-5xl font-extrabold text-indigo-600" id="days"></div>
+      <div class="text-gray-600 mt-2">días restantes</div>
+    </div>
+
+    <!-- Botones -->
+    <div class="flex gap-3">
+      <button 
+        onclick="calculate()"
+        class="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition"
+      >
+        Calcular
+      </button>
+
+      <button 
+        onclick="shareResult()"
+        class="flex-1 bg-gray-200 text-gray-800 py-3 rounded-xl font-semibold hover:bg-gray-300 transition"
+      >
+        Compartir
+      </button>
+    </div>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
