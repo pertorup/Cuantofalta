@@ -1,6 +1,6 @@
-import fs from "fs";
-import https from "https";
-import ical from "node-ical";
+const fs = require("fs");
+const https = require("https");
+const ical = require("node-ical");
 
 const SOURCES = [
   {
