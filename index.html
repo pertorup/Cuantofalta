@@ -4,74 +4,166 @@
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://pertorup.github.io/Cuantofalta/">
   <meta charset="UTF-8" />
-  <title>¿Cuánto falta?</title>
+  <title>¿Cuánto falta? | Countdown para fechas importantes</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- SEO básico -->
-  <meta name="description" content="Calculá cuánto falta para una fecha importante. Gratis, rápido y sin registros.">
+  <!-- SEO básico (se actualiza dinámicamente con JS si es necesario) -->
+  <meta name="description" content="Calculá cuánto falta para una fecha importante. Gratis, rápido y sin registros. | Countdown timer for important dates." />
+  <meta name="keywords" content="countdown, fechas, calendario, feriado, eventos, días restantes" />
+  
+  <!-- Open Graph / Social Sharing -->
+  <meta property="og:title" content="¿Cuánto falta?" />
+  <meta property="og:description" content="Calculá cuánto falta para una fecha importante. Gratis y sin registros." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://pertorup.github.io/Cuantofalta/" />
+  <meta property="og:image" content="https://pertorup.github.io/Cuantofalta/og-image.png" />
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="¿Cuánto falta?" />
+  <meta name="twitter:description" content="Calculá cuánto falta para una fecha importante." />
 
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Configuración opcional de Tailwind -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          animation: {
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    /* Estilos personalizados para mejor experiencia */
+    .fade-in { animation: fadeIn 0.3s ease-in; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Mejorar accesibilidad en focus */
+    button:focus-visible, input:focus-visible {
+      outline: 3px solid #6366f1;
+      outline-offset: 2px;
+    }
+    
+    /* Efecto hover suave en eventos */
+    #eventsList a {
+      transition: transform 0.15s ease, background-color 0.15s ease;
+    }
+    #eventsList a:hover {
+      transform: translateX(4px);
+    }
+  </style>
 </head>
 
-<body class="bg-gradient-to-br from-indigo-600 to-purple-700 min-h-screen flex items-center justify-center text-white">
+<body class="bg-gradient-to-br from-indigo-600 to-purple-700 min-h-screen flex items-center justify-center text-white p-4">
 
-  <main class="bg-white text-gray-900 rounded-2xl shadow-xl p-6 w-full max-w-md">
+  <main class="bg-white/95 backdrop-blur text-gray-900 rounded-2xl shadow-2xl p-6 w-full max-w-md fade-in">
     
-    <h1 class="text-2xl font-bold text-center mb-4">
+    <!-- Título principal con data-i18n para traducción dinámica -->
+    <h1 class="text-2xl md:text-3xl font-bold text-center mb-4" data-i18n="title">
       ¿Cuánto falta?
     </h1>
 
-    <p class="text-center text-gray-600 mb-6">
+    <p class="text-center text-gray-600 mb-6" data-i18n="subtitle">
       Elegí una fecha y mirá el tiempo restante.
     </p>
 
     <!-- Input fecha -->
+    <label for="targetDate" class="sr-only" data-i18n="selectDateLabel">Seleccionar fecha</label>
     <input 
       type="date" 
       id="targetDate"
-      class="w-full p-3 border rounded-xl mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      data-i18n-placeholder="selectDate"
+      class="w-full p-3 border border-gray-300 rounded-xl mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
     />
 
-    <!-- Resultado -->
-    <div id="result" class="text-center my-6 hidden">
-      <div class="text-5xl font-extrabold text-indigo-600" id="days"></div>
-      <div class="text-gray-600 mt-2">días restantes</div>
+    <!-- Resultado (oculto por defecto) -->
+    <div id="result" class="text-center my-6 hidden fade-in" role="region" aria-live="polite">
+      <div class="text-5xl md:text-6xl font-extrabold text-indigo-600 tabular-nums" id="days">0</div>
+      <div class="text-gray-600 mt-2 font-medium" data-i18n="daysRemaining">días restantes</div>
     </div>
 
-    <!-- Botones -->
-    <div class="flex gap-3">
+    <!-- Botones de acción -->
+    <div class="flex flex-col sm:flex-row gap-3">
       <button 
-        onclick="calculate()"
-        class="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition"
+        id="btnCalculate"
+        class="flex-1 bg-indigo-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-indigo-700 active:scale-[0.98] transition shadow-md hover:shadow-lg"
+        data-i18n="calculate"
       >
         Calcular
       </button>
 
       <button 
-        onclick="shareResult()"
-        class="flex-1 bg-gray-200 text-gray-800 py-3 rounded-xl font-semibold hover:bg-gray-300 transition"
+        id="btnShare"
+        class="flex-1 bg-gray-200 text-gray-800 py-3 px-4 rounded-xl font-semibold hover:bg-gray-300 active:scale-[0.98] transition shadow-md"
+        data-i18n="share"
       >
         Compartir
       </button>
-
-		<button 
-		  onclick="generateImage()"
-		  class="w-full mt-3 bg-purple-600 text-white py-3 rounded-xl font-semibold hover:bg-purple-700 transition"
-		>
-		  📸 Generar imagen
-		</button>	  
     </div>
-	
-	<section class="mt-8">
-	  <h2 class="text-lg font-semibold mb-3 text-gray-700">
-		🔜 Próximos eventos
-	  </h2>
+    
+    <button 
+      id="btnGenerateImage"
+      class="w-full mt-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 px-4 rounded-xl font-semibold hover:from-purple-700 hover:to-pink-700 active:scale-[0.98] transition shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+      data-i18n="generateImage"
+    >
+      <span>📸</span>
+      <span>Generar imagen</span>
+    </button>
 
-	  <ul id="eventsList" class="space-y-2 text-sm"></ul>
-	</section>
+    <!-- Sección de eventos próximos -->
+    <section class="mt-8 pt-6 border-t border-gray-200">
+      <h2 class="text-lg font-semibold mb-3 text-gray-700 flex items-center gap-2" data-i18n="upcomingEvents">
+        <span>🔜</span>
+        <span>Próximos eventos</span>
+      </h2>
+
+      <ul id="eventsList" class="space-y-2 text-sm min-h-[2rem]">
+        <!-- Los eventos se cargan dinámicamente desde app.js -->
+        <li class="text-center text-gray-400 py-2" data-i18n="loadingEvents">Cargando eventos...</li>
+      </ul>
+    </section>
+    
+    <!-- Footer con información adicional -->
+    <footer class="mt-8 pt-4 border-t border-gray-200 text-center text-xs text-gray-500">
+      <p data-i18n="footerText">Gratis • Sin registros • Funciona offline</p>
+      <p class="mt-1">
+        <a href="https://github.com/pertorup/Cuantofalta" 
+           class="text-indigo-600 hover:text-indigo-800 underline-offset-2 hover:underline"
+           target="_blank" 
+           rel="noopener noreferrer"
+           data-i18n="viewSource">
+          Ver código en GitHub
+        </a>
+      </p>
+    </footer>
   </main>
 
+  <!-- Toast para notificaciones -->
+  <div id="toast" class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg text-sm opacity-0 transition-opacity duration-300 pointer-events-none z-50" role="alert" aria-live="assertive">
+  </div>
+
+  <!-- Script principal -->
   <script src="app.js"></script>
+  
+  <!-- Script opcional para registrar Service Worker (PWA) -->
+  <script>
+    // Registro básico de Service Worker para soporte offline
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(err => {
+          console.log('SW registration failed:', err);
+        });
+      });
+    }
+  </script>
 </body>
 </html>
